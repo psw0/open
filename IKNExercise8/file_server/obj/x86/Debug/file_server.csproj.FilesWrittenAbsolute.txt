@@ -1,0 +1,7 @@
+/home/ikn/handin1/file_server/obj/x86/Debug/.NETFramework,Version=v4.0.AssemblyAttribute.cs
+/home/ikn/handin1/file_server/bin/Debug/file_server.exe.mdb
+/home/ikn/handin1/file_server/bin/Debug/file_server.exe
+/home/ikn/handin1/file_server/obj/x86/Debug/file_server.exe
+/home/ikn/handin1/file_server/obj/x86/Debug/file_server.exe.mdb
+/home/ikn/handin1/file_server/bin/Debug/LIB.dll
+/home/ikn/handin1/file_server/bin/Debug/LIB.dll.mdb
