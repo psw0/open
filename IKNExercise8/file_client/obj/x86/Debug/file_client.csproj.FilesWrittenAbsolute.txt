@@ -1,7 +1,7 @@
-/home/ikn/handin1/file_client/obj/x86/Debug/.NETFramework,Version=v4.0.AssemblyAttribute.cs
-/home/ikn/handin1/file_client/bin/Debug/file_client.exe.mdb
-/home/ikn/handin1/file_client/bin/Debug/file_client.exe
-/home/ikn/handin1/file_client/obj/x86/Debug/file_client.exe
-/home/ikn/handin1/file_client/obj/x86/Debug/file_client.exe.mdb
-/home/ikn/handin1/file_client/bin/Debug/LIB.dll
-/home/ikn/handin1/file_client/bin/Debug/LIB.dll.mdb
+/home/ikn/repo03/IKNExercise8/file_client/obj/x86/Debug/.NETFramework,Version=v4.0.AssemblyAttribute.cs
+/home/ikn/repo03/IKNExercise8/file_client/bin/Debug/file_client.exe.mdb
+/home/ikn/repo03/IKNExercise8/file_client/bin/Debug/file_client.exe
+/home/ikn/repo03/IKNExercise8/file_client/obj/x86/Debug/file_client.exe
+/home/ikn/repo03/IKNExercise8/file_client/obj/x86/Debug/file_client.exe.mdb
+/home/ikn/repo03/IKNExercise8/file_client/bin/Debug/LIB.dll
+/home/ikn/repo03/IKNExercise8/file_client/bin/Debug/LIB.dll.mdb

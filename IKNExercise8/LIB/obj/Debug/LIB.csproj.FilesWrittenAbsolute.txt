@@ -1,5 +1,5 @@
-/home/ikn/handin1/LIB/obj/Debug/.NETFramework,Version=v4.0.AssemblyAttribute.cs
-/home/ikn/handin1/LIB/bin/Debug/LIB.dll.mdb
-/home/ikn/handin1/LIB/bin/Debug/LIB.dll
-/home/ikn/handin1/LIB/obj/Debug/LIB.dll
-/home/ikn/handin1/LIB/obj/Debug/LIB.dll.mdb
+/home/ikn/repo03/IKNExercise8/LIB/obj/Debug/.NETFramework,Version=v4.0.AssemblyAttribute.cs
+/home/ikn/repo03/IKNExercise8/LIB/bin/Debug/LIB.dll.mdb
+/home/ikn/repo03/IKNExercise8/LIB/bin/Debug/LIB.dll
+/home/ikn/repo03/IKNExercise8/LIB/obj/Debug/LIB.dll
+/home/ikn/repo03/IKNExercise8/LIB/obj/Debug/LIB.dll.mdb

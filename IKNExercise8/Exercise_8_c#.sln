@@ -27,6 +27,6 @@ Global
 		{EE28A31A-6194-40D8-9478-022D47CB6517}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = file_server\file_server.csproj
+		StartupItem = file_client\file_client.csproj
 	EndGlobalSection
 EndGlobal

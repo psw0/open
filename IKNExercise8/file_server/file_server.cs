@@ -1,3 +1,4 @@
+
 using System;
 using System.IO;
 using System.Net;
@@ -17,6 +18,9 @@ namespace tcp
 		/// </summary>
 		const int BUFSIZE = 1000;
 
+		/// <summary>
+		/// The request count. The amount of requests serviced.
+		/// </summary>
 		int requestCount;
 
 		/// <summary>
@@ -30,37 +34,43 @@ namespace tcp
  		/// </summary>
 		private file_server ()
 		{
-			TcpListener TCPserver = new TcpListener(PORT);
-			byte[] bytes = new byte[BUFSIZE];
+			// Select IP to listen on
+			IPAddress server_IP = choose_ip();
+
+			// Start TCPserver
+			TcpListener TCPserver = new TcpListener(server_IP, PORT);
 			requestCount = 0;
 			TCPserver.Start ();
 
-			while (true)
-			{
-			    try
-			    {
-				Console.WriteLine("Waiting for connection, plz");
-				// Blocking until connection
-				Socket TCPsocket = TCPserver.AcceptSocket();
-				Console.WriteLine("Connected, hopefully");
+			// Main loop
 
-				// modtag fil navn
-				int received_bytes = TCPsocket.Receive(bytes);
-			        string received_string = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
-			        Console.WriteLine("Received bytes: {0}", received_bytes);
-			        Console.WriteLine("Received string: {0}", received_string);
+			Console.WriteLine ("Waiting for connection ...");
+			while (!Console.KeyAvailable) {
+				if (TCPserver.Pending ()) {
+					try {
+						// Blocking until connection
+						TcpClient client = TCPserver.AcceptTcpClient ();
+						Console.WriteLine ("Connected...!");
 
-			        //TCPsocket.Send(System.Text.Encoding.ASCII.GetBytes("HALLO"));
+						// Setup network stream
+						NetworkStream stream = client.GetStream ();
 
-                    sendFile(received_string, received_bytes, new NetworkStream(TCPsocket));
-			    }
-			    catch (Exception ex)
-			    {
-                    Console.WriteLine(ex.ToString());
-			    }
+						// Receive file name
+						string received_filename = receive_filename (stream);
+						Console.WriteLine ("Received file name: {0}", received_filename);
+
+						// Send file
+						sendFile (received_filename, stream);
+
+						Console.WriteLine ("Total number of requests: {0}", requestCount);
+
+					} catch (Exception ex) {
+						Console.WriteLine (ex.ToString ());
+					}
+				}
 			}
             TCPserver.Stop();
-		    Console.ReadLine();
+			Console.WriteLine ("Server shutting down, requests: {0}", requestCount);
 		}
 
 		/// <summary>
@@ -75,21 +85,98 @@ namespace tcp
 		/// <param name='io'>
 		/// Network stream for writing to the client.
 		/// </param>
-		private void sendFile (String fileName, long fileSize, NetworkStream io)
+		private void sendFile (string fileName, NetworkStream stream)
 		{
+			// increment requestCount to indicated serviced requests
 			requestCount = requestCount + 1;
-			NetworkStream networkStream = io;
-			byte[] buffer = new byte[BUFSIZE];
-			using (var s = File.OpenRead(fileName))
+
+			// buffer for reading file
+			byte[] buffer;
+			int byteAmount = 0;
+
+			if (file_exists (fileName)) 
 			{
-				int amountRead;
-				while ((amountRead= s.Read(buffer, 0, fileSize)) > 0)
+				// Send length of file to client
+				long file_length = get_file_length (fileName);
+				buffer = System.Text.Encoding.ASCII.GetBytes ("<" + file_length.ToString() + ">");
+				stream.Write (buffer, 0, buffer.Length);
+
+				// Open the file
+				using (var s = new BinaryReader(new FileStream(fileName, FileMode.Open)))
 				{
-					io.Write(buffer, 0, amountRead);
+					// Keep sending data until the file is exhausted
+					while ((buffer = s.ReadBytes(1000)).Length > 0)
+					{
+						byteAmount = byteAmount + buffer.Length;
+						stream.Write(buffer, 0, buffer.Length);
+					}
+				}
+				stream.Flush();
+				Console.WriteLine ("Bytes sent: {0}", byteAmount);
+			}
+			else
+			{
+				// TODO: refactor at some point
+				buffer = System.Text.Encoding.ASCII.GetBytes ("<-1>");
+				stream.Write(buffer, 0, 4);
+				Console.WriteLine("File not found");
+			}
+		}
+
+		// Receives filename as null terminated string from stream, blocking
+		private string receive_filename(NetworkStream stream)
+		{
+			//TODO: Cleanup
+			string file_name = "";
+			do
+			{
+				int read_byte = stream.ReadByte();
+				if(read_byte != -1){
+					file_name = file_name + (char)read_byte;
+				}
+			}while(file_name[file_name.Length-1] != '\0');
+
+			return file_name.Substring (0,file_name.Length-1);
+		}
+
+		// Returns length of file in bytes
+		private long get_file_length(string fileName)
+		{
+			FileInfo info = new FileInfo (fileName);
+			return info.Length;
+		}
+
+		// Returns whether a file exists or not
+		private bool file_exists(string filename)
+		{
+			FileInfo info = new FileInfo (filename);
+			return info.Exists;
+		}
+
+		// Generates dialog to select IP and returns selected IPAddress
+		private static IPAddress choose_ip ()
+		{
+			IPAddress[] server_IPs = Dns.GetHostEntry (Dns.GetHostName ()).AddressList;
+			int selected_ip;
+			while (true) {
+				Console.WriteLine ("Select IP to listen on");
+				for (int i = 0; i < server_IPs.Length; ++i) {
+					Console.WriteLine (i + ": " + server_IPs [i].ToString ());
+				}
+				Console.Write ("IP to use: ");
+				selected_ip = (int)(Console.Read () - '0');
+				Console.WriteLine ("");
+				if (selected_ip >= 0 && selected_ip < server_IPs.Length) {
+					break;
+				}
+				else {
+					Console.WriteLine ("Index out of range");
+					Console.WriteLine ("");
 				}
 			}
-			io.Flush();
+			return server_IPs[selected_ip];
 		}
+
 
 		/// <summary>
 		/// The entry point of the program, where the program control starts and ends.
